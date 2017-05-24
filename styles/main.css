@@ -49,12 +49,19 @@ body {
      text-decoration: none;
      cursor: pointer;
  }
+ .links-container .navbar-link:active {
+       color: rgb(233,50,117);
+       background-color: white;
+ }
 .links-container .navbar-link:hover {
       color: rgb(233,50,117);
 }
 .container {
       margin: 0 auto;
       max-width: 64rem;
+}
+.container.narrow {
+      max-width: 56rem;
 }
 /* Medium and small screens (640px) */
 @media (min-width: 640px) {
