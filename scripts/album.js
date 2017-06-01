@@ -107,16 +107,19 @@ var albumPicasso = {
           // Selects first child element, which is the song-item-number element
         });
       }
+
       var index = 1;
-      albumImage.addEventListener("click", function (event) {
-        setCurrentAlbum(albumList[index]);
-        index ++;
-        if (index == albumList.length) {
-            index = 0;
-        }
+     albumImage.addEventListener('click', function (event) {
+       setCurrentAlbum(albumList[index]);
+       index ++;
+       if (index === albumList.length) {
+           index = 0;
+       }
 
 
 
-      });
+     });
+
+
 
   }
