@@ -77,12 +77,12 @@ var albumPicasso = {
            // Change the content from the number to the play button's HTML
            // The target property on the event object at #1 stores the DOM element where the event occurred.
            // Only target individual song rows during event delegation
-           event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
+              event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
           }
       });
 
       for (var i = 0; i < songRows.length; i++) {
-        songRows[i].addEventListener('mouseover', function(event) {
+        songRows[i].addEventListener('mouseleave', function(event) {
           // Reverts content back to number
           this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
           // Selects first child element, which is the song-item-number element
