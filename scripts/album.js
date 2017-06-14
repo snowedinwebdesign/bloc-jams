@@ -79,44 +79,109 @@ var albumPicasso = {
         albumSongList.innerHTML += createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
    }
  };
+ //  that keeps traversing the DOM upward until a parent with a specified class name is found.
+ var findParentByClassName = function(element, targetClass) {
+    if (element) {
+        var currentParent = element.parentElement;
+        while (currentParent.className !== targetClass && currentParent.className !== null) {
+            currentParent = currentParent.parentElement;
+        }
+        return currentParent;
+    }
+};
+//findParentByClassName function enables us to write a larger function that will always return the song item. This method, which we'll call getSongItem, should take an element and, based on that element's class name(s), use a switch statement that returns the element with the .song-item-number class.
+var getSongItem = function(element) {
+    switch (element.className) {
+        case 'album-song-button':
+        case 'ion-play':
+        case 'ion-pause':
+            return findParentByClassName(element, 'song-item-number');
+        case 'album-view-song-item':
+            return element.querySelector('.song-item-number');
+        case 'song-item-title':
+        case 'song-item-duration':
+            return findParentByClassName(element, 'album-view-song-item').querySelector('.song-item-number');
+        case 'song-item-number':
+            return element;
+        default:
+            return;
+    }
+};
+var clickHandler = function(targetElement) {
+  var songItem = getSongItem(targetElement);
+
+  if (currentlyPlayingSong === null) {
+      songItem.innerHTML = pauseButtonTemplate;
+      currentlyPlayingSong = songItem.getAttribute('data-song-number');
+  } else if (currentlyPlayingSong === songItem.getAttribute('data-song-number')) {
+      songItem.innerHTML = playButtonTemplate;
+      currentlyPlayingSong = null;
+  } else if (currentlyPlayingSong !== songItem.getAttribute('data-song-number')) {
+      var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '""]');
+      currentlyPlayingSongElement.innerHTML = currentlyPlayingSongElement.getAttribute('data-song-number');
+      songItem.innerHTML = pauseButtonTemplate;
+      currentlyPlayingSong = songItem.getAttribute('data-song-number');
+  }
+};
  // Elements we'll be adding listeners to
  var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
  var songRows = document.getElementsByClassName('album-view-song-item');
  // Album button templates
  var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
+ var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>';
  // brought albumImage var into global scope. and made array of albums.
  var albumImage = document.getElementsByClassName('album-cover-art')[0];
  var albumList = [albumPicasso, albumMarconi, albumJackson];
+ // stores state of playing songs
+ var currentlyPlayingSong = null;
+
+
  window.onload = function() {
       setCurrentAlbum(albumPicasso);
 
-
+      // Change the content from the number to the play button's HTML
+      // The target property on the event object at #1 stores the DOM element where the event occurred.
+      // Only target individual song rows during event delegation
       songListContainer.addEventListener('mouseover', function(event) {
-          if (event.target.parentElement.className === 'album-view-song-item') {
-           // Change the content from the number to the play button's HTML
-           // The target property on the event object at #1 stores the DOM element where the event occurred.
-           // Only target individual song rows during event delegation
-              event.target.parentElement.querySelector('.song-item-number').innerHTML = playButtonTemplate;
-          }
+        if (event.target.parentElement.className === 'album-view-song-item') {
+            var songItem = getSongItem(event.target);
+
+            if (songItem.getAttribute('data-song-number') !== currentlyPlayingSong) {
+                songItem.innerHTML = playButtonTemplate;
+            }
+    }
+
       });
 
       for (var i = 0; i < songRows.length; i++) {
         songRows[i].addEventListener('mouseleave', function(event) {
           // Reverts content back to number
-          this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
-          // Selects first child element, which is the song-item-number element
+          //#1 we've cached the song item that we're leaving in a variable. Referencing  getSongItem() repeatedly causes multiple queries that can hinder performance. We've done the same with the song number.
+          var songItem = getSongItem(event.target);
+          var songItemNumber = songItem.getAttribute('data-song-number');
+          //#2 we've added the conditional that checks that the item the mouse is leaving is not the current song, and we only change the content if it isn't.
+          if (songItemNumber !== currentlyPlayingSong) {
+            songItem.innerHTML = songItemNumber;
+
+          }
+        });
+        songRows[i].addEventListener('click', function(event) {
+            clickHandler(event.target);
         });
       }
+
       var index = 1;
-      albumImage.addEventListener("click", function (event) {
-        setCurrentAlbum(albumList[index]);
-        index ++;
-        if (index == albumList.length) {
-            index = 0;
-        }
+     albumImage.addEventListener('click', function (event) {
+       setCurrentAlbum(albumList[index]);
+       index ++;
+       if (index === albumList.length) {
+           index = 0;
+       }
 
 
 
-      });
+     });
+
+
 
   }
