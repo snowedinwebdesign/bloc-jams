@@ -22,7 +22,7 @@ $(window).load(function() {
   //#3 the addEventListener() method becomes jQuery's scroll() method, which takes a function as an argument. jQuery's scroll() "method" is still an event handler like addEventListener(), but the jQuery wrapper obscures the appearance of events. When the window scrolls, the function executes.
     $(window).scroll(function(event) {
   //#4we replace  document.documentElement.scrollTop || document.body.scrollTop with the jQuery equivalent of $(window).scrollTop().
-        if ($(window).scrollTop() >= scrollDistance {
+        if ($(window).scrollTop() >= scrollDistance) {
             animatePoints();
         }
     });
