@@ -126,7 +126,7 @@ var nextSong = function() {
     var lastSongNumber = currentlyPlayingSongNumber;
 
     // Set a new current song
-    setSong(currentSongIndex + 1;)
+    setSong(currentSongIndex + 1);
     currentSoundFile.play();
 
 
@@ -152,7 +152,7 @@ var previousSong = function() {
     var lastSongNumber = currentlyPlayingSongNumber;
 
     // Set a new current song
-    setSong(currentSongIndex + 1;)
+    setSong(currentSongIndex + 1);
     currentSoundFile.play();
 
     // Update the Player Bar information
